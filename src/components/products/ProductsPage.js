@@ -1,20 +1,22 @@
-import React from 'react';
+import React, { createContext } from 'react';
 import { useEffect, useReducer } from 'react';
 /** VIEWS */
 import ProductForm from './ProductForm';
 import ProductsList from './ProductsList';
 
 /** API CALLS */
-import { getProducts } from './productsDbCall';
+import * as db from './productsDbCall';
 import { reducer, INITIAL_PRODUCT } from './reducer';
 
-const ProductsPage = () => {
+export const ProductContext = createContext();
+
+function ProductsPage() {
   const [state, dispatch] = useReducer(reducer, INITIAL_PRODUCT);
 
   useEffect(() => {
     /** add category to fetch category products */
     // getProducts('meyve');
-    getProducts(dispatch);
+    db.getProducts(dispatch);
     return () => {
       console.log('end');
     };
@@ -28,16 +30,12 @@ const ProductsPage = () => {
   /** VIEWS */
   return (
     <div>
-      <ProductForm state={state} dispatch={dispatch} />
-      <div className="product-page">
-        {state.loading ? (
-          <div>loading</div>
-        ) : (
-          <ProductsList state={state} dispatch={dispatch} />
-        )}
-      </div>
+      <ProductContext.Provider value={{ dispatch: dispatch, state: state }}>
+        <ProductForm />
+        <ProductsList />
+      </ProductContext.Provider>
     </div>
   );
-};
+}
 
 export default ProductsPage;

@@ -14,11 +14,13 @@ import {
 const productsCol = collection(db, 'products');
 
 /** GET ALL PRODUCTS */
+
 const getProducts = async (dispatch, catId) => {
   dispatch({ type: 'PRODUCTS_LOADING' });
   const q = query(productsCol, catId && where('category', '==', catId));
   try {
     const data = await getDocs(q);
+
     dispatch({ type: 'PRODUCTS_READY', payload: data });
   } catch (error) {
     console.error(error);

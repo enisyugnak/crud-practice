@@ -1,9 +1,10 @@
-import { React, useEffect, useRef } from 'react';
+import { React, useContext, useEffect, useRef } from 'react';
+import { ProductContext } from './ProductsPage';
 /** API CALLS */
-import { addProduct, updateProduct } from './productsDbCall';
+import * as db from './productsDbCall';
 
-const ProductForm = (props) => {
-  const { dispatch, state } = props;
+const ProductForm = () => {
+  const { dispatch, state } = useContext(ProductContext);
   const nameRef = useRef(null);
 
   useEffect(() => {
@@ -24,13 +25,12 @@ const ProductForm = (props) => {
   function submitClicked() {
     // console.log('submit clicked with : ', prodState);
     state.product.id
-      ? updateProduct(dispatch, state.product)
-      : addProduct(dispatch, state.product);
+      ? db.updateProduct(dispatch, state.product)
+      : db.addProduct(dispatch, state.product);
   }
 
   const submitForm = (e) => {
     e.preventDefault();
-
     //console.log('submit form : ', state);
     const { name, price } = state.product;
     if (name && price) {
